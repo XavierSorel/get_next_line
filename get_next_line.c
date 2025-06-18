@@ -21,11 +21,28 @@ char *get_next_line(int fd)
 	char			buffer[BUFFER_SIZE + 1];
 	t_list			*new_line;
 	t_list			*new_node;
+	char 			*line_full;
+	int 			i;
 
 	read(fd, buffer, BUFFER_SIZE);
-	new_node = ft_lstnew(buffer)
-	ft_lstadd_back(*new_line, new_node);
-	return (buffer);
+	while ((line_full = ft_strchr(buffer)) == NULL)
+	{
+		new_node = ft_lstnew(buffer);
+		ft_lstadd_back(*new_line, new_node);
+		read(fd, buffer, BUFFER_SIZE);
+	}
+	i = 0;
+	while (buffer[i++] != "\0" && buffer[i++] != "\n")
+	       leftover[i] = buffer[i];
+	new_node = ft_lstnew(leftover);
+	ft_lstadd_back(*new_node, new_node)	
+	while (*line_full)
+	{
+		*leftover = *linefull;
+		leftover++;
+		linefull++;
+	}
+	return (XXXX);
 }
 
 int	main()

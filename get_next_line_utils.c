@@ -45,16 +45,14 @@ void    ft_lstadd_back(t_list **lst, t_list *new)
 }
 
 
-char	*ft_strchr(const char *str, int c)
+char	*ft_strchr(const char *str)
 {
 	while (*str)
 	{
-		if (*str == (char)c)
+		if (*str == '\0' || *str == '\n')
 			return ((char *)str);
 		str++;
 	}
-	if ((char)c == '\0')
-		return ((char *)str);
 	return (NULL);
 }
 size_t	ft_strlen(const char *str)
