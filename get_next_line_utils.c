@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-t_list	*ft_lstnew(void *content)
+t_list	*ft_lstnew(char *content)
 {
 	t_list	*new_node;
 
@@ -24,13 +24,26 @@ t_list	*ft_lstnew(void *content)
 	return (new_node);
 }
 
-void	ft_lstadd_front(t_list **lst, t_list *new)
+void    ft_lstadd_back(t_list **lst, t_list *new)
 {
-	if (!new)
-		return ;
-	new->next = *lst;
-	*lst = new;
+        t_list  *current;
+
+        if (!new)
+                return ;
+        if (*lst == NULL)
+        {
+                *lst = new;
+                new->next = NULL;
+                return ;
+        }
+        current = *lst;
+        while (current->next != NULL)
+        {
+                current = current->next;
+        }
+        current->next = new;
 }
+
 
 char	*ft_strchr(const char *str, int c)
 {

@@ -5,6 +5,6 @@ char    *ft_strrchr(const char *str, int c);
 
 typedef struct s_list
 {
-	void			*content;
+	char			content[BUFFER_SIZE + 1];
 	struct s_list	*next;
 }	t_list;

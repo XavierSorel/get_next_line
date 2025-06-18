@@ -17,12 +17,15 @@
 
 char *get_next_line(int fd)
 {
-		static char	buffer[BUFFER_SIZE + 1];
-		int			i;
+	static char		leftover[BUFFER_SIZE + 1];
+	char			buffer[BUFFER_SIZE + 1];
+	t_list			*new_line;
+	t_list			*new_node;
 
-		i = 0;
-		read(fd, buffer, BUFFER_SIZE);
-		return (buffer);
+	read(fd, buffer, BUFFER_SIZE);
+	new_node = ft_lstnew(buffer)
+	ft_lstadd_back(*new_line, new_node);
+	return (buffer);
 }
 
 int	main()
