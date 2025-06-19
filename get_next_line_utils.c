@@ -44,6 +44,31 @@ void    ft_lstadd_back(t_list **lst, t_list *new)
         current->next = new;
 }
 
+char	*ft_merge_lst_return(t_list **lst, size_t len)
+{
+	char	*full_line;
+	char 	*start;
+	t_list	*current;
+	int	i;
+	
+	full_line = malloc((char *)sizeof(BUFFER_SIZE) * len);
+	start = full_line;
+	current = *lst; 
+	while (current)
+	{
+		i = 0;
+		while (current->content)
+		{
+			*full_line = current->content[i];
+			i++;
+			full_line++;
+		}
+		current = current->next;
+
+	}
+	return (start);
+}
+
 
 char	*ft_strchr(const char *str)
 {
