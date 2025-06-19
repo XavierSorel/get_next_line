@@ -15,11 +15,17 @@
 t_list	*ft_lstnew(char *content)
 {
 	t_list	*new_node;
+	int	i;
 
+	i = 0;
 	new_node = (t_list *)malloc(sizeof(t_list));
 	if (!new_node)
 		return (NULL);
-	new_node->content = content;
+	while (content[i])
+	{
+		new_node->content[i] = content[i];
+		i++;
+	}
 	new_node->next = NULL;
 	return (new_node);
 }
@@ -44,20 +50,19 @@ void    ft_lstadd_back(t_list **lst, t_list *new)
         current->next = new;
 }
 
-char	*ft_merge_lst_return(t_list **lst, size_t len)
+char	*ft_merge_lst_return(t_list **lst, size_t len, char *full_line)
 {
-	char	*full_line;
 	char 	*start;
 	t_list	*current;
 	int	i;
 	
-	full_line = malloc((char *)sizeof(BUFFER_SIZE) * len);
+	full_line = (char *)malloc(sizeof(BUFFER_SIZE) * len);
 	start = full_line;
 	current = *lst; 
 	while (current)
 	{
 		i = 0;
-		while (current->content)
+		while (current->content[i] != '\0')
 		{
 			*full_line = current->content[i];
 			i++;
@@ -70,17 +75,20 @@ char	*ft_merge_lst_return(t_list **lst, size_t len)
 }
 
 
-char	*ft_strchr(const char *str)
+int 	ft_strrchr(const char *str)
 {
-	while (*str)
+	int	i;
+
+	i = 0;
+	while (str[i])
 	{
-		if (*str == '\0' || *str == '\n')
-			return ((char *)str);
-		str++;
+		if (str[i] == '\0' || str[i] == '\n')
+			return (i);
+		i++;
 	}
-	return (NULL);
+	return (-1);
 }
-size_t	ft_strlen(const char *str)
+/*size_t	ft_strlen(const char *str)
 {
 	size_t	len;
 
@@ -91,17 +99,23 @@ size_t	ft_strlen(const char *str)
 		str++;
 	}
 	return (len);
-}
+}*/
 
-void	free_all(char **ret_str)
+void	free_all(t_list **lst)
 {
-	int	i;
+        t_list  *current;
+        t_list  *to_delete;
 
-	i = 0;
-	while (ret_str[i])
-	{
-		free(ret_str[i]);
-		i++;
-	}
-	free(ret_str);
+        if (!lst)
+                return ;
+        current = *lst;
+        while (current)
+        {
+                        to_delete = current;
+                        current = current->next;
+                        free(to_delete->content);
+                        free(to_delete);
+        }
+        *lst = NULL;
 }
+

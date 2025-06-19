@@ -1,4 +1,9 @@
+#include <unistd.h>
+#include <fcntl.h>
+#include <stdio.h>
 #include <stddef.h>
+#include <stdlib.h>
+
 
 typedef struct t_list
 {
@@ -7,9 +12,9 @@ typedef struct t_list
 }       t_list;
 
 char 	*get_next_line(int fd);
-char    *ft_merge_lst_return(t_list **lst, size_t len)
+char    *ft_merge_lst_return(t_list **lst, size_t len, char *full_line);
 void    ft_lstadd_back(t_list **lst, t_list *new);
-size_t  ft_strlen(const char *str);
-char    *ft_strrchr(const char *str);
+//size_t  ft_strlen(const char *str);
+int	ft_strrchr(const char *str);
 t_list  *ft_lstnew(char *content);
-void    free_all(char **ret_str)
+void    free_all(t_list **lst);

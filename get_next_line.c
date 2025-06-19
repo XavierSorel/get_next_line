@@ -11,68 +11,66 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <stddef.h>
 
 char *get_next_line(int fd)
 {
 	static char		*leftover;
-	char			end_of_line[BUFFER_SIZE + 1];
+	char			*end_of_line;
+	char			*full_line;
 	char			buffer[BUFFER_SIZE + 1];
 	t_list			*new_line;
 	t_list			*new_node;
-	char 			*line_full;
 	int 			i;
-
+	int			index_efol;
+	int			len;
+	
+	len = 0;
+	full_line = NULL;
 	// Checks if there is leftover from earlier calls
 	// and adds to start of list
 	if (leftover != NULL)
 	{
 		new_node = ft_lstnew(leftover);
 		ft_lstadd_back(&new_line, new_node);
+		len++;
 	}
 	leftover = NULL;
 	read(fd, buffer, BUFFER_SIZE); //reads first buffer size chunk
-	while ((line_full = ft_strrchr(buffer)) == NULL) 
+	while ((index_efol = ft_strrchr(buffer)) == -1) 
 	// calls func to check if EOL or EOF is in chunk
-	// if its NULL enters loop
-	// otherwise assigns the buffer chunk to line_full and passes loop 
+	// if its there returns position
+	// otherwise enters loop to keep searching 
 	{
 		// Inside loop creates a node with the chunk of str
 		// adds it a end of list 
 		// reads another buffer size chunk
+		len++;
 		new_node = ft_lstnew(buffer);
 		ft_lstadd_back(&new_line, new_node);
 		read(fd, buffer, BUFFER_SIZE);
 	}
+	end_of_line = (char *)malloc(sizeof(char) * (index_efol + 1));
+	leftover = (char *)malloc(sizeof(char) * (BUFFER_SIZE - index_efol + 1));
 	i = 0;
-	// puts remaining  chars before EOF/EOL for last node
-	while (buffer[i] && buffer[i++] != '\n')
+	// Puts remaining  chars before EOF/EOL for last node
+	while (i < index_efol)
+	{
 	       end_of_line[i] = buffer[i];
-	// creates last node with the last chars
-	new_node = ft_lstnew(end_of_line);
-	ft_lstadd_back(&new_line, new_node);
-	// Keeps adding whats left of buffer after EOL onto the static
+	       i++;
+	}
+	 // Creates last node with the last chars
+        new_node = ft_lstnew(end_of_line);
+        ft_lstadd_back(&new_line, new_node);
+	free(end_of_line);
+	// Adds the remaining part of buffer to leftover
+	// to be used on next call
 	while (i < BUFFER_SIZE)
 	{
 		*leftover = buffer[i];
-		*leftover++;
 		i++;
+		leftover++;
 	}
-	free_all(new_line);
-	return (ft_merge_lst_return(&new_line, len));
-}
-
-int	main()
-{
-	int		fd;
-	char	*line;
-
-	fd = open("test.txt", O_RDONLY);
-	if(fd == -1)
-	line = get_next_line(fd);
-	printf("%s\n", line);
-	return (0);
+	ft_merge_lst_return(&new_line, len, full_line);
+	free_all(&new_line);
+	return (full_line);
 }
