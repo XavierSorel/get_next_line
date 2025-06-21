@@ -14,7 +14,7 @@ NAME    = get_next_line.a
 TEST    = test_gnl
 
 CC      = cc
-CFLAGS  = -Wall -Wextra -Werror -D BUFFER_SIZE=42
+CFLAGS  = -Wall -Wextra -Werror -D BUFFER_SIZE=3
 
 SRC     = get_next_line.c get_next_line_utils.c
 OBJ     = $(SRC:.c=.o)

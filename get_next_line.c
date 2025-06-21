@@ -12,7 +12,12 @@
 
 #include "get_next_line.h"
 
-char *get_next_line(int fd)
+void	print_buffer(char buffer[BUFFER_SIZE + 1])
+{
+	printf("Buffer content: %s\n", buffer);
+}
+
+char 	*get_next_line(int fd)
 {
 	static char		*leftover;
 	char			*end_of_line;
@@ -24,18 +29,23 @@ char *get_next_line(int fd)
 	int			index_efol;
 	int			len;
 	
+	printf("im get next line \n");
 	len = 0;
+	new_line = NULL;
 	full_line = NULL;
 	// Checks if there is leftover from earlier calls
 	// and adds to start of list
 	if (leftover != NULL)
 	{
 		new_node = ft_lstnew(leftover);
+		if (!new_node)
+			return (NULL);
 		ft_lstadd_back(&new_line, new_node);
 		len++;
 	}
 	leftover = NULL;
 	read(fd, buffer, BUFFER_SIZE); //reads first buffer size chunk
+	print_buffer(buffer);
 	while ((index_efol = ft_strrchr(buffer)) == -1) 
 	// calls func to check if EOL or EOF is in chunk
 	// if its there returns position
@@ -44,10 +54,14 @@ char *get_next_line(int fd)
 		// Inside loop creates a node with the chunk of str
 		// adds it a end of list 
 		// reads another buffer size chunk
+		printf("index_eol = %d \n", index_efol);
 		len++;
 		new_node = ft_lstnew(buffer);
+		if (!new_node)
+			return (NULL);
 		ft_lstadd_back(&new_line, new_node);
 		read(fd, buffer, BUFFER_SIZE);
+		print_buffer(buffer);
 	}
 	end_of_line = (char *)malloc(sizeof(char) * (index_efol + 1));
 	leftover = (char *)malloc(sizeof(char) * (BUFFER_SIZE - index_efol + 1));
@@ -72,5 +86,6 @@ char *get_next_line(int fd)
 	}
 	ft_merge_lst_return(&new_line, len, full_line);
 	free_all(&new_line);
+	printf("%s", full_line);
 	return (full_line);
 }
