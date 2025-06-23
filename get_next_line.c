@@ -41,7 +41,7 @@ char 	*get_next_line(int fd)
 	leftover = NULL;
 	read(fd, buffer, BUFFER_SIZE); 
 	print_buffer(buffer);
-	while ((index_efol = ft_strrchr(buffer)) == -1)  
+	while ((index_efol = ft_strchr(buffer)) == -1)
 	{
 		printf("index_eol = %d \n", index_efol);
 		new_node = ft_lstnew(buffer);
@@ -49,7 +49,7 @@ char 	*get_next_line(int fd)
 			return (NULL);
 		ft_lstadd_back(&new_line, new_node);
 		read(fd, buffer, BUFFER_SIZE);
-		//print_buffer(buffer);
+		print_buffer(buffer);
 	}
 	end_of_line = (char *)malloc(sizeof(char) * (index_efol + 1));
 	leftover = (char *)malloc(sizeof(char) * (BUFFER_SIZE - index_efol + 1));

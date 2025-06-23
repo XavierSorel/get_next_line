@@ -94,15 +94,15 @@ void	ft_merge_lst_return(t_list **lst, char **full_line)
 	*start = '\0';
 }
 
-int 	ft_strrchr(const char *str)
+int 	ft_strchr(const char *str)
 {
-	//printf("im in strrchr\n");
+	printf("im in strchr\n");
 	int	i;
 
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] == '\0' || str[i] == '\n')
+		if (str[i] == '\n')
 			return (i);
 		i++;
 	}
