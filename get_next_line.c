@@ -17,6 +17,23 @@ void	print_buffer(char buffer[BUFFER_SIZE + 1])
 	printf("Buffer content: %s\n", buffer);
 }
 
+void	print_lst(t_list **lst)
+{
+	t_list	*current;
+	int		i;
+
+	if (!lst || !*lst)
+		return ;
+	current = *lst;
+	while (current)
+	{
+		i = 0;
+		while (current->content[i])
+			write(1, &current->content[i++], 1);
+		current = current->next;
+	}
+}
+
 char 	*get_next_line(int fd)
 {
 	static char		*leftover;
@@ -36,25 +53,34 @@ char 	*get_next_line(int fd)
 		if (!new_node)
 			return (NULL);
 		ft_lstadd_back(&new_line, new_node);
+		print_lst(&new_line);
 		free(leftover);
 	}
 	leftover = NULL;
-	read(fd, buffer, BUFFER_SIZE); 
-	print_buffer(buffer);
+	int bytes_read = read(fd, buffer, BUFFER_SIZE);
+	if (bytes_read == 0)
+		return (NULL);
+	//print_buffer(buffer);
+	if (bytes_read >= 0)
+		buffer[bytes_read] = '\0';
 	while ((index_efol = ft_strchr(buffer)) == -1)
 	{
-		printf("index_eol = %d \n", index_efol);
+		//printf("index_eol = %d \n", index_efol);
 		new_node = ft_lstnew(buffer);
 		if (!new_node)
 			return (NULL);
 		ft_lstadd_back(&new_line, new_node);
-		read(fd, buffer, BUFFER_SIZE);
-		print_buffer(buffer);
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read == 0)
+			return (NULL);
+		if (bytes_read >= 0)
+			buffer[bytes_read] = '\0';
+		//print_buffer(buffer);
+		//print_lst(&new_line);
 	}
-	end_of_line = (char *)malloc(sizeof(char) * (index_efol + 1));
-	leftover = (char *)malloc(sizeof(char) * (BUFFER_SIZE - index_efol + 1));
+	end_of_line = (char *)malloc(sizeof(char) * (index_efol + 2));
 	i = 0;
-	while (i < index_efol)
+	while (i <= index_efol)
 	{
 	       end_of_line[i] = buffer[i];
 	       i++;
@@ -62,14 +88,19 @@ char 	*get_next_line(int fd)
 	new_node = ft_lstnew(end_of_line);
         ft_lstadd_back(&new_line, new_node);
 	free(end_of_line);
-	while (i < BUFFER_SIZE)
-	{
-		*leftover = buffer[i];
-		i++;
-		leftover++;
+	int	leftover_len = bytes_read - (index_efol + 1);
+	if (leftover_len > 0)
+	{        
+		leftover = (char *)malloc(sizeof(char) * leftover_len + 1);
+		int a = 0;
+		while (i < bytes_read)
+			leftover[a++] = buffer[i++];
+		leftover[a] = '\0';
 	}
+	else
+		leftover = NULL;
 	ft_merge_lst_return(&new_line, &full_line);
 	free_all(&new_line);
-	printf("%s\n", full_line);
+	//printf("%s\n", full_line);
 	return (full_line);
 }

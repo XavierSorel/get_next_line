@@ -7,7 +7,7 @@
 
 typedef struct t_list
 {
-        char                    content[BUFFER_SIZE + 1];
+        char                    *content;
         struct t_list   *next;
 }       t_list;
 

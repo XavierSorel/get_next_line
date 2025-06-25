@@ -10,10 +10,9 @@ int     main()
         if(fd == -1)
 		return (1);
 	line = get_next_line(fd);
-	printf("preloop-main");
 	while (line != NULL)
 	{
-        	printf("%s", line);
+        	printf("%s\n", line);
 		free(line);
 		line = get_next_line(fd);
 	}

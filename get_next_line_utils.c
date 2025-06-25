@@ -22,11 +22,18 @@ t_list	*ft_lstnew(char *content)
 	new_node = (t_list *)malloc(sizeof(t_list));
 	if (!new_node)
 		return (NULL);
+	new_node->content = malloc(ft_strlen(content) + 1);
+	if (!new_node->content)
+	{
+		free(new_node);
+		return (NULL);
+	}
 	while (content[i])
 	{
 		new_node->content[i] = content[i];
 		i++;
 	}
+	new_node->content[i] = '\0';
 	new_node->next = NULL;
 	return (new_node);
 }
@@ -96,7 +103,7 @@ void	ft_merge_lst_return(t_list **lst, char **full_line)
 
 int 	ft_strchr(const char *str)
 {
-	printf("im in strchr\n");
+	//printf("im in strchr\n");
 	int	i;
 
 	i = 0;
@@ -135,7 +142,7 @@ void	free_all(t_list **lst)
         {
                         to_delete = current;
                         current = current->next;
-                        //free(to_delete->content);
+                        free(to_delete->content);
                         free(to_delete);
         }
         *lst = NULL;
