@@ -12,6 +12,7 @@ typedef struct t_list
 }       t_list;
 
 char 	*get_next_line(int fd);
+void    add_leftover_newline(t_list **new_line, char *leftover);
 void	ft_merge_lst_return(t_list **lst, char **full_line);
 void    ft_lstadd_back(t_list **lst, t_list *new);
 size_t  ft_strlen(const char *str);

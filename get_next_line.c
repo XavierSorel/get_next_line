@@ -12,11 +12,11 @@
 
 #include "get_next_line.h"
 
-void	print_buffer(char buffer[BUFFER_SIZE + 1])
+/*void	print_buffer(char buffer[BUFFER_SIZE + 1])
 {
 	printf("Buffer content: %s\n", buffer);
 }
-
+*/
 void	print_lst(t_list **lst)
 {
 	t_list	*current;
@@ -34,6 +34,17 @@ void	print_lst(t_list **lst)
 	}
 }
 
+void	add_leftover_newline(t_list **new_line, char *leftover)
+{
+	t_list	*new_node;
+
+	printf("[DEBUG] Adding leftover: \"%s\"\n", leftover);
+	new_node = ft_lstnew(leftover);
+        if (!new_node)
+		return ;
+	ft_lstadd_back(new_line, new_node);
+}
+
 char 	*get_next_line(int fd)
 {
 	static char		*leftover;
@@ -47,25 +58,17 @@ char 	*get_next_line(int fd)
 	
 	new_line = NULL;
 	full_line = NULL;
-	if (leftover != NULL)
-	{
-		new_node = ft_lstnew(leftover);
-		if (!new_node)
-			return (NULL);
-		ft_lstadd_back(&new_line, new_node);
-		print_lst(&new_line);
-		free(leftover);
-	}
+	if (leftover != NULL && leftover[0] != '\0')
+		add_leftover_newline(&new_line, leftover);
+	free(leftover);
 	leftover = NULL;
 	int bytes_read = read(fd, buffer, BUFFER_SIZE);
 	if (bytes_read == 0)
 		return (NULL);
-	//print_buffer(buffer);
 	if (bytes_read >= 0)
 		buffer[bytes_read] = '\0';
 	while ((index_efol = ft_strchr(buffer)) == -1)
 	{
-		//printf("index_eol = %d \n", index_efol);
 		new_node = ft_lstnew(buffer);
 		if (!new_node)
 			return (NULL);
@@ -75,8 +78,6 @@ char 	*get_next_line(int fd)
 			return (NULL);
 		if (bytes_read >= 0)
 			buffer[bytes_read] = '\0';
-		//print_buffer(buffer);
-		//print_lst(&new_line);
 	}
 	end_of_line = (char *)malloc(sizeof(char) * (index_efol + 2));
 	i = 0;
@@ -91,7 +92,7 @@ char 	*get_next_line(int fd)
 	int	leftover_len = bytes_read - (index_efol + 1);
 	if (leftover_len > 0)
 	{        
-		leftover = (char *)malloc(sizeof(char) * leftover_len + 1);
+		leftover = (char *)malloc(sizeof(char) * (leftover_len + 1));
 		int a = 0;
 		while (i < bytes_read)
 			leftover[a++] = buffer[i++];
@@ -100,7 +101,11 @@ char 	*get_next_line(int fd)
 	else
 		leftover = NULL;
 	ft_merge_lst_return(&new_line, &full_line);
+	printf("========== LINE BUILT ==========\n");
+	print_lst(&new_line);
+	printf("========= END OF LINE ==========\n");
+	printf("Returned line: \"%s\"\n", full_line);
+
 	free_all(&new_line);
-	//printf("%s\n", full_line);
 	return (full_line);
 }

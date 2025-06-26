@@ -14,7 +14,6 @@
 
 t_list	*ft_lstnew(char *content)
 {
-	//printf("im in ft_lstnew\n");
 	t_list	*new_node;
 	int	i;
 
@@ -40,8 +39,7 @@ t_list	*ft_lstnew(char *content)
 
 void    ft_lstadd_back(t_list **lst, t_list *new)
 {
-        //printf("im in lstadd_back Start\n");
-	t_list  *current;
+        t_list  *current;
 
         if (!new)
                 return ;
@@ -57,7 +55,6 @@ void    ft_lstadd_back(t_list **lst, t_list *new)
                 current = current->next;
         }
         current->next = new;
-	//printf("im in lstadd_back End\n");
 }
 
 int	size_return_str(t_list *lst)
@@ -77,7 +74,6 @@ int	size_return_str(t_list *lst)
 
 void	ft_merge_lst_return(t_list **lst, char **full_line)
 {
-	//printf("im in merge lst\n");
 	char 	*start;
 	t_list	*current;
 	int	i;
@@ -103,7 +99,6 @@ void	ft_merge_lst_return(t_list **lst, char **full_line)
 
 int 	ft_strchr(const char *str)
 {
-	//printf("im in strchr\n");
 	int	i;
 
 	i = 0;
@@ -131,8 +126,7 @@ size_t	ft_strlen(const char *str)
 
 void	free_all(t_list **lst)
 {
-	//printf("im in free all\n");
-        t_list  *current;
+	t_list  *current;
         t_list  *to_delete;
 
         if (!lst)
@@ -147,4 +141,3 @@ void	free_all(t_list **lst)
         }
         *lst = NULL;
 }
-
