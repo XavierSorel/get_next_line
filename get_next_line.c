@@ -68,10 +68,11 @@ char 	*get_next_line(int fd)
 	int bytes_read = read(fd, buffer, BUFFER_SIZE);
 	if (bytes_read == 0)
 		return (NULL);
-	if (bytes_read >= 0)
+	if (bytes_read > 0)
 		buffer[bytes_read] = '\0';
 	while ((index_efol = ft_strchr(buffer)) == -1)
 	{
+		printf("Buffer: %s Efol: %d\n", buffer, index_efol);
 		new_node = ft_lstnew(buffer);
 		if (!new_node)
 			return (NULL);
@@ -81,7 +82,10 @@ char 	*get_next_line(int fd)
 			return (NULL);
 		if (bytes_read >= 0)
 			buffer[bytes_read] = '\0';
+		print_lst(&new_line);
+		printf("\n");
 	}
+	printf("Buffer: %s Efol: %d\n", buffer, index_efol);
 	end_of_line = (char *)malloc(sizeof(char) * (index_efol + 2));
 	i = 0;
 	while (i <= index_efol)
@@ -108,8 +112,6 @@ char 	*get_next_line(int fd)
 		leftover[a] = '\0';
 		printf("%s\n", leftover);
 	}
-	else
-		leftover = NULL;
 	ft_merge_lst_return(&new_line, &full_line);
 	free_all(&new_line);
 	return (full_line);
