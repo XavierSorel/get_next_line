@@ -17,6 +17,8 @@ t_list	*ft_lstnew(char *content)
 	t_list	*new_node;
 	int	i;
 
+	if (!content || content[0] == '\0')
+		return (NULL);
 	i = 0;
 	new_node = (t_list *)malloc(sizeof(t_list));
 	if (!new_node)

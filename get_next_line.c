@@ -38,7 +38,8 @@ void	add_leftover_newline(t_list **new_line, char *leftover)
 {
 	t_list	*new_node;
 
-	printf("[DEBUG] Adding leftover: \"%s\"\n", leftover);
+	if (!leftover || leftover[0] == '\0')
+		return;
 	new_node = ft_lstnew(leftover);
         if (!new_node)
 		return ;
@@ -59,8 +60,10 @@ char 	*get_next_line(int fd)
 	new_line = NULL;
 	full_line = NULL;
 	if (leftover != NULL && leftover[0] != '\0')
+	{
 		add_leftover_newline(&new_line, leftover);
-	free(leftover);
+		free(leftover);
+	}
 	leftover = NULL;
 	int bytes_read = read(fd, buffer, BUFFER_SIZE);
 	if (bytes_read == 0)
@@ -86,26 +89,28 @@ char 	*get_next_line(int fd)
 	       end_of_line[i] = buffer[i];
 	       i++;
 	}
-	new_node = ft_lstnew(end_of_line);
-        ft_lstadd_back(&new_line, new_node);
-	free(end_of_line);
+	if (end_of_line != NULL && end_of_line[0] != '\0')
+	{
+		new_node = ft_lstnew(end_of_line);
+        	ft_lstadd_back(&new_line, new_node);
+		free(end_of_line);
+	}
 	int	leftover_len = bytes_read - (index_efol + 1);
 	if (leftover_len > 0)
 	{        
 		leftover = (char *)malloc(sizeof(char) * (leftover_len + 1));
 		int a = 0;
 		while (i < bytes_read)
+		{
+			printf("%c\n", buffer[i]);
 			leftover[a++] = buffer[i++];
+		}
 		leftover[a] = '\0';
+		printf("%s\n", leftover);
 	}
 	else
 		leftover = NULL;
 	ft_merge_lst_return(&new_line, &full_line);
-	printf("========== LINE BUILT ==========\n");
-	print_lst(&new_line);
-	printf("========= END OF LINE ==========\n");
-	printf("Returned line: \"%s\"\n", full_line);
-
 	free_all(&new_line);
 	return (full_line);
 }
