@@ -12,134 +12,80 @@
 
 #include "get_next_line.h"
 
-t_list	*ft_lstnew(char *content)
+size_t	gnl_strlen(const char *s)
 {
-	t_list	*new_node;
-	int	i;
+	size_t	len = 0;
+	while (s && s[len])
+		len++;
+	return (len);
+}
 
-	if (!content || content[0] == '\0')
+char	*gnl_strdup(const char *s)
+{
+	size_t	len = gnl_strlen(s);
+	char	*dup = malloc(len + 1);
+	size_t	i = 0;
+
+	if (!dup)
 		return (NULL);
-	i = 0;
-	new_node = (t_list *)malloc(sizeof(t_list));
-	if (!new_node)
-		return (NULL);
-	new_node->content = malloc(ft_strlen(content) + 1);
-	if (!new_node->content)
+	while (i < len)
 	{
-		free(new_node);
-		return (NULL);
-	}
-	while (content[i])
-	{
-		new_node->content[i] = content[i];
+		dup[i] = s[i];
 		i++;
 	}
-	new_node->content[i] = '\0';
-	new_node->next = NULL;
-	return (new_node);
+	dup[i] = '\0';
+	return (dup);
 }
 
-void    ft_lstadd_back(t_list **lst, t_list *new)
+size_t	gnl_strlcat(char *dst, const char *src, size_t size)
 {
-        t_list  *current;
+	size_t	d = gnl_strlen(dst);
+	size_t	s = 0;
 
-        if (!new)
-                return ;
-        if (*lst == NULL)
-        {
-                *lst = new;
-                new->next = NULL;
-                return ;
-        }
-        current = *lst;
-        while (current->next != NULL)
-        {
-                current = current->next;
-        }
-        current->next = new;
-}
-
-int	size_return_str(t_list *lst)
-{
-	t_list	*current;
-	size_t	size;
-
-	size = 0;
-	current = lst;
-	while (current)
+	if (size <= d)
+		return (size + gnl_strlen(src));
+	while (src[s] && d + s + 1 < size)
 	{
-		size += ft_strlen(current->content);
-		current = current->next;
+		dst[d + s] = src[s];
+		s++;
 	}
-	return (size);
+	dst[d + s] = '\0';
+	return (d + gnl_strlen(src));
 }
 
-void	ft_merge_lst_return(t_list **lst, char **full_line)
+int	find_eol(const char *s)
 {
-	char 	*start;
-	t_list	*current;
-	int	i;
-	size_t	len;
-	
-	len = size_return_str(*lst);
-	*full_line = (char *)malloc(sizeof(char) * len + 1);
-	start = *full_line;
-	current = *lst; 
-	while (current)
+	int	i = 0;
+	while (s && s[i])
 	{
-		i = 0;
-		while (current->content[i] != '\0')
-		{
-			*start = current->content[i];
-			i++;
-			start++;
-		}
-		current = current->next;
-	}
-	*start = '\0';
-}
-
-int 	ft_strchr(const char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '\n')
+		if (s[i] == '\n')
 			return (i);
 		i++;
 	}
 	return (-1);
 }
 
-size_t	ft_strlen(const char *str)
+char	*join_list(t_list *lst)
 {
-	size_t	len;
+	size_t	total = 0;
+	char	*joined;
+	t_list	*cur = lst;
 
-	len = 0;
-	while (*str)
+	while (cur)
 	{
-		len++;
-		str++;
+		total += gnl_strlen(cur->content);
+		cur = cur->next;
 	}
-	return (len);
+	joined = malloc(total + 1);
+	if (!joined)
+		return (NULL);
+	joined[0] = '\0';
+	cur = lst;
+	while (cur)
+	{
+		gnl_strlcat(joined, cur->content, total + 1);
+		cur = cur->next;
+	}
+	return (joined);
 }
 
-void	free_all(t_list **lst)
-{
-	t_list  *current;
-        t_list  *to_delete;
-
-        if (!lst)
-                return ;
-        current = *lst;
-        while (current)
-        {
-                        to_delete = current;
-                        current = current->next;
-                        free(to_delete->content);
-                        free(to_delete);
-        }
-        *lst = NULL;
-}

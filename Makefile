@@ -3,49 +3,43 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: xavier <xavier@student.42.fr>              +#+  +:+       +#+         #
+#    By: you <you@student.42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/06/19 10:00:00 by xavier            #+#    #+#              #
-#    Updated: 2025/06/19 10:00:00 by xavier           ###   ########.fr        #
+#    Created: 2025/07/28 12:00:00 by you               #+#    #+#              #
+#    Updated: 2025/07/28 12:00:00 by you              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME    = get_next_line.a
-TEST    = test_gnl
+NAME = get_next_line.a
+CC = cc
+CFLAGS = -Wall -Wextra -Werror
+BUFFER ?= 42
+CPPFLAGS = -D BUFFER_SIZE=$(BUFFER)
 
-CC      = cc
-CFLAGS  = -Wall -Wextra -Werror -D BUFFER_SIZE=3
-
-SRC     = get_next_line.c get_next_line_utils.c
-OBJ     = $(SRC:.c=.o)
-
-TEST_SRC = main.c
-TEST_OBJ = $(TEST_SRC:.c=.o)
-
-AR      = ar rcs
+SRCS = get_next_line.c get_next_line_utils.c
+OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)
 
-$(NAME): $(OBJ)
-	$(AR) $(NAME) $(OBJ)
+$(NAME): $(OBJS)
+	ar rcs $(NAME) $(OBJS)
 
 %.o: %.c get_next_line.h
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
-# 🧪 Target to build the test executable
-test: $(NAME) $(TEST_OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(TEST_OBJ) -o $(TEST)
+test: $(NAME) main.o
+	$(CC) $(CFLAGS) main.o $(NAME) -o test_gnl
 
-debug: CFLAGS += -g
-debug: test
+main.o: main.c get_next_line.h
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c main.c -o main.o
 
 clean:
-	rm -f $(OBJ) $(TEST_OBJ)
+	rm -f *.o
 
 fclean: clean
-	rm -f $(NAME) $(TEST)
+	rm -f $(NAME) test_gnl
 
 re: fclean all
 
-.PHONY: all clean fclean re debug test
+.PHONY: all clean fclean re test
 

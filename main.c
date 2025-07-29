@@ -1,21 +1,25 @@
 #include "get_next_line.h"
-#include <assert.h>
+#include <fcntl.h>
+#include <stdio.h>
 
-int     main()
+int	main(void)
 {
-        int             fd;
-       	char    	*line;
+	int		fd;
+	char	*line;
 
 	fd = open("test.txt", O_RDONLY);
-        if(fd == -1)
-		return (1);
-	line = get_next_line(fd);
-	while (line != NULL)
+	if (fd < 0)
 	{
-        	printf("MAIN: %s", line);
-		free(line);
-		line = get_next_line(fd);
+		perror("open");
+		return (1);
 	}
+	while ((line = get_next_line(fd)) != NULL)
+	{
+		printf("%s", line);
+		free(line);
+	}
+	close(fd);
 	return (0);
 }
+
 
